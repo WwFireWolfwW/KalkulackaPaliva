@@ -1,75 +1,185 @@
-# Kalkulačka paliva – Skupina A
+# Zadání projektu (Skupina A): Kalkulačka spotřeby a nákladů na palivo
 
-WPF aplikace v C# (.NET 8, Windows) podle učitelova zadání `ZADANI_UTERY_20_10`.
-Obsahuje pouze **Skupinu A**.
+### ⚠️ Pravidla a omezení pro vypracování
+* **Povoleno:** Můžete používat své vlastní poznámky, sešity nebo dříve vytvořené příklady.
+* **Zákaz používání AI:** Je **přísně zakázáno** používat generativní umělou inteligenci (ChatGPT, Copilot, Claude apod.) pro psaní C# kódu, logiky rozhraní nebo Unit Testů.
+* **Výjimka pro AI:** Umělou inteligenci je povoleno použít **výhradně pro generování a úpravu XAML kódu** (designu uživatelského rozhraní).
 
-## Struktura
-- `KalkulackaPaliva/IFuelCalculatorService.cs` – rozhraní ze zadání
-- `KalkulackaPaliva/FuelCalculatorService.cs` – výpočty a kontroly vstupů
-- `KalkulackaPaliva/MainWindow.xaml` – uživatelské rozhraní WPF
-- `KalkulackaPaliva/MainWindow.xaml.cs` – code-behind
-- `KalkulackaPaliva.Tests/FuelCalculatorServiceTests.cs` – MSTest testy
+---
 
-## Spuštění
-1. Ve Windows otevři `KalkulackaPaliva.sln` ve Visual Studiu 2022 s podporou **.NET desktop development**.
-2. Nastav projekt `KalkulackaPaliva` jako spouštěcí (Set as Startup Project).
-3. Spusť aplikaci přes `F5`.
-4. Otevři **Test → Test Explorer → Run All Tests**.
+### 1. Cíl projektu
 
-## Ruční kontrola
-Nádrž 50, spotřeba 5, vzdálenost 400, cena 40:
-- Dojezd: 1000 km
-- Palivo: 20 l
-- Cena: 800 Kč
+Vytvořte desktopovou aplikaci ve **WPF** (s využitím code-behind, rozhraní a servisní třídy) a příslušné **Unit Testy**. Aplikace slouží k výpočtu dojezdu vozu se spalovacím motorem, spotřeby paliva na trasu a celkových nákladů na cestu.
 
-Příklady z testů zadání používají různé vstupy nezávisle:
-- 50 / 5 * 100 = 1000 km
-- 400 / 100 * 6 = 24 l
-- 24 * 40 = 960 Kč
+### 2. Uživatelské rozhraní (WPF UI)
 
-## Nahrání na GitHub
-1. Na github.com klikni **New repository**, zadej název např. `KalkulackaPaliva-SkupinaA`.
-2. V terminálu ve složce řešení:
-   ```
-   git init
-   git add .
-   git commit -m "WPF kalkulacka paliva a MSTest testy"
-   git branch -M main
-   git remote add origin https://github.com/TVUJ-LOGIN/KalkulackaPaliva-SkupinaA.git
-   git push -u origin main
-   ```
-3. Ve svém repozitáři vyber **Settings → Collaborators → Add people**.
-4. Zadej uživatelské jméno spolužáka, odešli pozvánku a zopakuj pro druhého.
-   Spolužáci musí pozvánku potvrdit.
+Okno aplikace (`MainWindow.xaml`) bude obsahovat:
 
-## Poznámky
-- Rozhraní IFuelCalculatorService vychází z přiloženého ZIPu.
-- Spotřeba musí být větší než nula v obou metodách, které ji přijímají; ostatní vstupy nesmí být záporné. Nulová nádrž, vzdálenost nebo cena jsou platné.
-- Metody odmítají NaN, nekonečno a přetečení výsledku.
-- `CollectionAssert` není potřeba, protože žádná metoda nevrací kolekci.
-- V tomto prostředí není k dispozici `dotnet`, takže testy nebylo možné spustit.
+* **Vstupní pole (`TextBox`):**
 
-## Modernizované rozhraní
-- Tmavý dvousloupcový panel s mentolovými akcenty, jednotkami ve vstupních polích a výraznou cenou cesty.
-- Stavy při najetí myší a zaměření klávesnicí; tlačítko funguje také přes Enter.
-- Minimální okno 860 × 620; při nedostatku výšky se obsah posouvá.
-- Při změně vstupu se staré výsledky odstraní, aby neukazovaly hodnoty z předchozího výpočtu.
-- Čísla ve výsledcích používají český formát, vstup přijímá čárku i tečku.
+  * Objem nádrže v litrech (např. `50`)
 
-## Kontrola této úpravy
-Provedena statická kontrola vzorců, vstupních validací, rozhraní, vazeb názvů prvků a obsluh událostí. XAML i projektové soubory prošly kontrolou XML. To nenahrazuje kompilaci XAML ani běh WPF.
-.NET SDK ani Windows v prostředí úpravy nejsou dostupné; MSTest testy, sestavení a skutečný vzhled ve WPF nebyly spuštěny ani vizuálně ověřeny. Před odevzdáním otevři řešení ve Visual Studiu, spusť všechny testy a aplikaci.
+  * Průměrná spotřeba na 100 km v litrech (např. `6.5`)
 
-### Rychlé ověření ve Windows
-1. Výchozí hodnoty 50 / 6,5 / 350 / 38,50: dojezd 769,23 km, palivo 22,75 l, cena 875,88 Kč.
-2. Hodnoty 50 / 5 / 400 / 40: dojezd 1 000,00 km, palivo 20,00 l, cena 800,00 Kč.
-3. Prázdný vstup, text, záporné číslo a nulová spotřeba: chybová hláška a žádný výsledek.
-4. Změň libovolný vstup po výpočtu: předchozí výsledky se vymažou. Enter přepočítá.
-5. Vyzkoušej Tab, zmenšení okna, posouvání a škálování Windows 125–150 %.
+  * Délka plánované cesty v km (např. `350`)
 
-Zadání má nejednoznačné vyjádření nulové spotřeby: část 4 ji výslovně řeší u dojezdu, část 5 uvádí spotřebu ≤ 0 obecně. Tato verze volí přísnější kontrolu v obou výpočtech.
+  * Cena za 1 litr paliva v Kč (např. `38.50`)
 
-## České názvy v kódu
-Vlastní proměnné, pomocné metody, prvky XAML a testovací metody mají krátké české názvy bez diakritiky (např. nadrz, spotreba, trasa, palivo, NactiCislo).
-IFuelCalculatorService, CalculateRange, CalculateFuelNeeded, CalculateTripCost a všechny jejich parametry v rozhraní i implementaci zůstaly přesně podle základního projektu. FuelCalculatorService zůstává podle zadání; MainWindow, App a standardní názvy WPF/.NET jsou zachovány.
-Změna upravuje pouze názvy; vzhled a výpočty zůstávají stejné. Kontrola zachování signatur a propojení XAML prošla. Kompilace a testy nebyly spuštěny (chybí .NET a Windows).
+* **Tlačítko (`Button`):**
+
+  * Spočítat (provedení výpočtu a vypsání výsledků)
+
+* **Výstupní pole (`TextBlock`):**
+
+  * Maximální dojezd (v km)
+
+  * Spotřebované palivo na cestu (v litrech)
+
+  * Celková cena za cestu (v Kč)
+
+### 3. Vzorečky pro výpočet
+
+**1. Maximální dojezd:**
+
+$$
+\text{Dojezd (km)} = \left(\frac{\text{Objem nádrže (l)}}{\text{Spotřeba na 100 km (l/100km)}}\right) \times 100
+$$
+
+**2. Potřebné palivo na cestu:**
+
+$$
+\text{Palivo (l)} = \left(\frac{\text{Délka cesty (km)}}{100}\right) \times \text{Spotřeba na 100 km (l/100km)}
+$$
+
+**3. Celková cena cesty:**
+
+$$
+\text{Cena (Kč)} = \text{Palivo (l)} \times \text{Cena za 1 litr (Kč)}
+$$
+
+### 4. Rozhraní (`IFuelCalculatorService`) a Servisní třída
+
+Nejprve vytvořte rozhraní `IFuelCalculatorService`:
+
+```csharp
+public interface IFuelCalculatorService
+{
+    double CalculateRange(double tankCapacity, double consumptionPer100Km);
+    double CalculateFuelNeeded(double distance, double consumptionPer100Km);
+    double CalculateTripCost(double fuelNeeded, double pricePerLiter);
+}
+```
+
+Následně vytvořte třídu `FuelCalculatorService`, která toto rozhraní implementuje.
+
+**Požadavek na ošetření chyb v logice:**
+Všechny metody musí kontrolovat vstupní parametry. Pokud je jakýkoliv vstup **záporný** nebo je spotřeba $0$ (která by způsobila dělení nulou u dojezdu), metoda vyhodí výjimku `ArgumentException` (např. `throw new ArgumentException("Hodnota musí být větší než 0.");`).
+
+### 5. Požadavky na Unit Testy
+
+Vytvořte testovací projekt (např. MSTest / xUnit) a otestujte servisní třídu:
+
+**Kladné testy (platné vstupy):**
+
+1. **Test dojezdu:** Vstup: Nádrž = $50\text{ l}$, Spotřeba = $5\text{ l/100km}$ $\rightarrow$ Očekávaný výsledek: $1000\text{ km}$.
+
+2. **Test spotřebovaného paliva:** Vstup: Vzdálenost = $400\text{ km}$, Spotřeba = $6\text{ l/100km}$ $\rightarrow$ Očekávaný výsledek: $24\text{ l}$.
+
+3. **Test ceny cesty:** Vstup: Palivo = $24\text{ l}$, Cena za litr = $40\text{ Kč}$ $\rightarrow$ Očekávaný výsledek: $960\text{ Kč}$.
+
+**Záporné testy (chybové stavy):**
+4. **Test chybného vstupu (výjimka):** Ověřte, že při zadání spotřeby $\le 0$ nebo záporné vzdálenosti vyhodí metoda výjimku `ArgumentException` (např. pomocí `Assert.ThrowsException<ArgumentException>(...)`).
+
+---
+
+# Zadání projektu (Skupina B): Bankovní kalkulačka spořicího účtu
+
+### ⚠️ Pravidla a omezení pro vypracování
+* **Povoleno:** Můžete používat své vlastní poznámky, sešity nebo dříve vytvořené příklady.
+* **Zákaz používání AI:** Je **přísně zakázáno** používat generativní umělou inteligenci (ChatGPT, Copilot, Claude apod.) pro psaní C# kódu, logiky rozhraní nebo Unit Testů.
+* **Výjimka pro AI:** Umělou inteligenci je povoleno použít **výhradně pro generování a úpravu XAML kódu** (designu uživatelského rozhraní).
+
+---
+
+### 1. Cíl projektu
+
+Vytvořte desktopovou aplikaci ve **WPF** (s využitím code-behind, rozhraní a servisní třídy) a příslušné **Unit Testy**. Aplikace slouží k výpočtu výnosů z jednoduchého spoření: spočítá úrok za rok, čistý zisk po zdanění a celkovou naspořenou částku.
+
+### 2. Uživatelské rozhraní (WPF UI)
+
+Okno aplikace (`MainWindow.xaml`) bude obsahovat:
+
+* **Vstupní pole (`TextBox`):**
+
+  * Vklad / Jistina v Kč (např. `100000`)
+
+  * Roční úroková sazba v % (např. `5`)
+
+  * Doba spoření v letech (např. `3`)
+
+  * Daň z příjmu / z úroku v % (např. `15`)
+
+* **Tlačítko (`Button`):**
+
+  * Spočítat (provedení výpočtu a vypsání výsledků)
+
+* **Výstupní pole (`TextBlock`):**
+
+  * Hrubý úrok celkem (v Kč)
+
+  * Čistý úrok po zdanění (v Kč)
+
+  * Celková konečná částka k výplatě (v Kč)
+
+### 3. Vzorečky pro výpočet
+
+**1. Hrubý úrok celkem:**
+
+$$
+\text{Hrubý úrok (Kč)} = \text{Vklad (Kč)} \times \left(\frac{\text{Úroková sazba (\%)}}{100}\right) \times \text{Doba (roky)}
+$$
+
+**2. Čistý úrok po zdanění:**
+
+$$
+\text{Čistý úrok (Kč)} = \text{Hrubý úrok (Kč)} \times \left(1 - \frac{\text{Daň (\%)}}{100}\right)
+$$
+
+**3. Celková konečná částka:**
+
+$$
+\text{Celková částka (Kč)} = \text{Vklad (Kč)} + \text{Čistý úrok (Kč)}
+$$
+
+### 4. Rozhraní (`ISavingsCalculatorService`) a Servisní třída
+
+Nejprve vytvořte rozhraní `ISavingsCalculatorService`:
+
+```csharp
+public interface ISavingsCalculatorService
+{
+    double CalculateGrossInterest(double principal, double interestRate, double years);
+    double CalculateNetInterest(double grossInterest, double taxRate);
+    double CalculateTotalAmount(double principal, double netInterest);
+}
+```
+
+Následně vytvořte třídu `SavingsCalculatorService`, která toto rozhraní implementuje.
+
+**Požadavek na ošetření chyb v logice:**
+Všechny metody musí kontrolovat vstupní parametry. Pokud je vklad, doba spoření, úrok nebo daň **záporné číslo**, případně daň vyšší než $100\,\%$, metoda vyhodí výjimku `ArgumentException` (např. `throw new ArgumentException("Zadány neplatné parametry.");`).
+
+### 5. Požadavky na Unit Testy
+
+Vytvořte testovací projekt (např. MSTest / xUnit) a otestujte servisní třídu:
+
+**Kladné testy (platné vstupy):**
+
+1. **Test hrubého úroku:** Vstup: Vklad = $100000\text{ Kč}$, Sazba = $5\%$, Doba = $2\text{ roky}$ $\rightarrow$ Očekávaný výsledek: $10000\text{ Kč}$.
+
+2. **Test čistého úroku:** Vstup: Hrubý úrok = $10000\text{ Kč}$, Daň = $15\%$ $\rightarrow$ Očekávaný výsledek: $8500\text{ Kč}$.
+
+3. **Test celkové částky:** Vstup: Vklad = $100000\text{ Kč}$, Čistý úrok = $8500\text{ Kč}$ $\rightarrow$ Očekávaný výsledek: $108500\text{ Kč}$.
+
+**Záporné testy (chybové stavy):**
+4. **Test chybného vstupu (výjimka):** Ověřte, že při zadání záporného vkladu nebo záporné doby spoření vyhodí metoda výjimku `ArgumentException` (např. pomocí `Assert.ThrowsException<ArgumentException>(...)`).
